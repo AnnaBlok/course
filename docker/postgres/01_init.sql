@@ -1,0 +1,10 @@
+CREATE ROLE "course" LOGIN PASSWORD 'course';
+ALTER ROLE "course" SET TIMEZONE = 'UTC';
+ALTER USER "course" SET search_path TO public;
+
+CREATE DATABASE "course" WITH OWNER "admin" TEMPLATE "template0" ENCODING 'UTF8' LC_COLLATE 'ru_RU.UTF-8' LC_CTYPE 'ru_RU.UTF-8' CONNECTION LIMIT -1;
+ALTER DATABASE "course" SET search_path TO "public";
+ALTER DATABASE "course" SET TIMEZONE = 'UTC';
+
+DROP SCHEMA IF EXISTS "public" CASCADE;
+CREATE SCHEMA "public" AUTHORIZATION "course";
