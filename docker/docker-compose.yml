@@ -1,18 +1,23 @@
 version: '3.2'
 
 services:
-  web:
-    image: php:7-apache
-    container_name: course.web
+  course.web:
+    build:
+      context: .
+      dockerfile: web/Dockerfile
     ports:
       - "${APACHE_PORT}:80"
     volumes:
       - ./../:/var/www/course
     depends_on:
       - course.db
-  db:
+    networks:
+      default:
+        aliases:
+          - "course.web.host"
+
+  course.db:
     image: postgres:14.1
-    container_name: course.db
     ports:
       - "${POSTGRES_PORT}:5432"
     environment:
@@ -20,5 +25,9 @@ services:
       POSTGRES_DB: course
       POSTGRES_PASSWORD: "${POSTGRES_ROOT_PASSWORD}"
     volumes:
-      - /postgres/init:/docker-entrypoint-initdb.d
-      - ./var/lib/postgresql/data/:/var/lib/postgresql/data
+      - /db/init:/docker-entrypoint-initdb.d
+      - /db/var/lib/postgresql/data/:/var/lib/postgresql/data
+    networks:
+      default:
+        aliases:
+          - "course.db.host"
