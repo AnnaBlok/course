@@ -9,6 +9,7 @@ $params = array_merge(
 return [
     'id' => 'course-frontend',
     'name' => 'Course',
+    'language' => 'ru',
     'basePath' => dirname(__DIR__),
     'bootstrap' => ['log'],
     'controllerNamespace' => 'frontend\controllers',

@@ -10,6 +10,7 @@ $params = array_merge(
 return [
     'id' => 'course-console',
     'name' => 'Course',
+    'language' => 'ru',
     'basePath' => dirname(__DIR__),
     'bootstrap' => ['log'],
     'controllerNamespace' => 'console\controllers',
