@@ -16,7 +16,7 @@ class m240212_092228_create_table_user_lesson extends Migration
             'id' => $this->primaryKey(),
             'user_id' => $this->integer()->notNull(),
             'lesson_id' => $this->integer()->notNull(),
-            'viewed_at' => $this->integer()->notNull(),
+            'watched_at' => $this->timestamp()->defaultValue('NOW()'),
         ]);
         $this->addForeignKey(
             'fk-user_lesson-user_id',
@@ -31,6 +31,13 @@ class m240212_092228_create_table_user_lesson extends Migration
             'lesson_id',
             'lesson',
             'id',
+        );
+
+        $this->createIndex(
+            'idx-unique-user_lesson-user_id-lesson_id',
+            'user_lesson',
+            'user_id, lesson_id',
+            true
         );
     }
 

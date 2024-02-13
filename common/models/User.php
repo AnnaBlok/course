@@ -3,8 +3,10 @@
 namespace common\models;
 
 use Yii;
+use yii\base\InvalidConfigException;
 use yii\base\NotSupportedException;
 use yii\behaviors\TimestampBehavior;
+use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
 use yii\web\IdentityInterface;
 
@@ -23,6 +25,7 @@ use yii\web\IdentityInterface;
  * @property integer $created_at
  * @property integer $updated_at
  * @property string $password write-only password
+ * @property Lesson[] $watchedLessons
  */
 class User extends ActiveRecord implements IdentityInterface
 {
@@ -38,7 +41,7 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public static function tableName()
     {
-        return '{{%user}}';
+        return 'user';
     }
 
     /**
@@ -64,14 +67,49 @@ class User extends ActiveRecord implements IdentityInterface
         ];
     }
 
+    /**
+     * @return bool
+     */
     public function isStudent(): bool
     {
         return $this->type === self::TYPE_STUDENT;
     }
 
+    /**
+     * @return bool
+     */
     public function isAdmin(): bool
     {
         return $this->type === self::TYPE_ADMIN;
+    }
+
+    /**
+     * @param int $id
+     * @return bool
+     * @throws InvalidConfigException
+     */
+    public function watchedLesson(int $id): bool
+    {
+        return $this->getWatchedLessons()->where(['lesson.id' => $id])->exists();
+    }
+
+    /**
+     * @return bool
+     * @throws InvalidConfigException
+     */
+    public function watchedAllLessons(): bool
+    {
+        return Lesson::findVisibleLessons()->count() === $this->getWatchedLessons()->count();
+    }
+
+    /**
+     * @return ActiveQuery
+     * @throws InvalidConfigException
+     */
+    public function getWatchedLessons(): ActiveQuery
+    {
+        return $this->hasMany(Lesson::class, ['id' => 'lesson_id'])
+            ->viaTable('user_lesson', ['user_id' => 'id']);
     }
 
     /**
